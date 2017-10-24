@@ -2,9 +2,9 @@ baseurl = "https://jmezach.github.io/"
 languageCode = "en-us"
 title = "Jonathan's Blog"
 # Enable comments by entering your Disqus shortname
-disqusShortname = "jonathanmezach"
+disqusShortname = "jmezach"
 # Enable Google Analytics by entering your tracking code
-googleAnalytics = ""
+googleAnalytics = "UA-108599285-1"
 # Define the number of posts per page
 paginate = 10
 footnotereturnlinkcontents = "↩"
