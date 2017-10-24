@@ -2,11 +2,11 @@
 title: "Data binding in code using Reactive Extensions"
 date: 2011-03-10T00:00:00+02:00
 draft: false
-tags: [ "C#", ".NET Framework" ]
+tags: [ "C#", ".NET Framework", "RX" ]
 categories: [ ".NET" ]
 ---
 
-First of all, it’s been a while since my last post here. I’ve busy working with SharePoint in the past few months and although there is plenty to write about SharePoint, a lot of it has already been written by other people, so I didn’t feel the need to write about it here. But lately I’ve found the time to experiment with Reactive Extensions again, which I’m quite fond of as you might remember from me previous [post](http://blogs.infosupport.com/blogs/jonathan/archive/2010/11/04/reactive-extensions.aspx) about the subject. So I thought it would be a good
+First of all, it’s been a while since my last post here. I’ve busy working with SharePoint in the past few months and although there is plenty to write about SharePoint, a lot of it has already been written by other people, so I didn’t feel the need to write about it here. But lately I’ve found the time to experiment with Reactive Extensions again, which I’m quite fond of as you might remember from me previous [post](/2010/11/04/reactive-extensions) about the subject. So I thought it would be a good
 
 As most of my readers will know, both Silverlight and WPF have a very powerful data binding mechanism. This mechanism enables some interesting scenario’s, one of which is of course the Model-View-ViewModel (MVVM) pattern which relies heavily on data binding. But these mechanisms can only be used from XAML, or in MVVM terms, the view. But sometimes you might want to use data binding between different View Model instances in code. This can be hard to accomplish, especially if you want to do it in a loosely coupled way.
 

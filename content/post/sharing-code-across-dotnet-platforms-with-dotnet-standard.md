@@ -14,7 +14,7 @@ Therefore Portable Class Libraries (PCL’s) were created to make that experienc
 
 One of the biggest drawbacks perhaps was that when a new platform came along you needed to check a box to indicate you want to run on that new platform, recompile your code and package it up into a shiny new package. You even had to do this if the new platform implemented all the same API’s as the other platforms you were already targeting.  
 
-Now, with the introduction of .NET Core, Microsoft realised this wasn’t a very sustainable model. So they introduced a new concept, .NET Standard. A lot has already been said about .NET Standard, including one of my [blogposts](https://blogs.infosupport.com/net-platform-standard-and-the-magic-of-imports/), but if you want a quick primer on what .NET Standard is I highly recommend checking out [this video](https://www.youtube.com/watch?v=YI4MurjfMn8&list=PLRAdsfhKI4OWx321A_pr-7HhRNk7wOLLY&index=1) by Immo Landwerth from Microsoft. He does a great job explaining what it is and what it means.  
+Now, with the introduction of .NET Core, Microsoft realised this wasn’t a very sustainable model. So they introduced a new concept, .NET Standard. A lot has already been said about .NET Standard, including one of my [blogposts](/2016/05/24/.net-platform-standard-and-the-magic-of-imports/), but if you want a quick primer on what .NET Standard is I highly recommend checking out [this video](https://www.youtube.com/watch?v=YI4MurjfMn8&list=PLRAdsfhKI4OWx321A_pr-7HhRNk7wOLLY&index=1) by Immo Landwerth from Microsoft. He does a great job explaining what it is and what it means.  
 
 For this blogpost however, I wanted to go a little deeper into how all this is going to work out for you as a developer.  
 

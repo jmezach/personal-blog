@@ -6,7 +6,7 @@ tags: [ ".NET Core", "Linux", "OSX", "Windows" ]
 categories: [ ".NET" ]
 ---
 
-If you’ve read my [previous post](https://blogs.infosupport.com/net-core-at-build-2016-2/) you know that I have a keen interest in .NET Core. For the last two weeks I’ve been installing new RC2 builds on my machine almost on a daily basis to see if I could get something working and I’m glad to see that as of a couple of days ago things seem to be coming together. Obviously it still is a bit of a moving target but I feel like a lot of things are starting to settle.
+If you’ve read my [previous post](/2016/04/02/.net-core-at-build-2016/) you know that I have a keen interest in .NET Core. For the last two weeks I’ve been installing new RC2 builds on my machine almost on a daily basis to see if I could get something working and I’m glad to see that as of a couple of days ago things seem to be coming together. Obviously it still is a bit of a moving target but I feel like a lot of things are starting to settle.
 
 In this post I wanted to share a bit about my experience working with all the new stuff and to give a bit of a look at what the developer experience is going to be when .NET Core goes RTM.
 
