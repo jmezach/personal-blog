@@ -1,0 +1,13 @@
+---
+title: "Cool tools: NetMassDownloader"
+date: 2008-05-23T00:00:00+02:00
+draft: false
+tags: [ ".NET", "Tools" ]
+categories: [ ".NET" ]
+---
+
+Today I was working on an issue in our application that was brought to our attention by one of the users. So I started investigating this issue and soon found out that the problem was situated in our ASP.Net front end. While I was debugging and analyzing the call stack I found out that something went wrong between the page that is being posted and the Mediator, which is responsible for actually saving the data to our back end services. We were using a GridView on our page and for some reason the objects that got to the Mediator didn't have its properties set right, so values from one row in the grid were being saved to another row. Unfortunately I couldn't really figure out what went wrong in between.
+
+I then remembered that a while ago Microsoft released symbol files and source code for the .NET Framework. So I figured out that if I could get this, I could step into the code of some of the ASP.NET WebControls and see what was going on there. After a quick Google search I found a patch for Visual Studio that I needed to install and then change some Visual Studio settings and I was good to go. The patch would retrieve the needed source code from Microsoft's server on the fly, as I was stepping through the code. Unfortunately the said patch was only supposed to work for Visual Studio 2008 and we are still using Visual Studio 2005\. As upgrading wasn't a real option, I was kinda stuck.
+
+After Googling some more, I found this tool called [NetMassDownloader](http://www.codeplex.com/NetMassDownloader), over at CodePlex. What it basically does is download the necessary .PDB and source code files for a specific assembly, or a directory containing one or more assemblies. The [original article](http://www.wintellect.com/cs/blogs/jrobbins/archive/2008/02/06/download-all-the-net-reference-source-code-at-once-with-net-mass-downloader.aspx) I found about this also explained how to set up Visual Studio 2005 to use these. So after downloading the tool, using it to download the PDB and source files for System.Web and setting up Visual Studio 2005 to use them, I was stepping through the GridView code and finally discovered what the problem was. Too bad that the problem was in fact in something I had written, but well, you can't get everything right the first time. I'm sure though that this will come in handy at some point in the future.
