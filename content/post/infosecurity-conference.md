@@ -16,12 +16,13 @@ My first session turned out to be an inspirational session about how IoT can be 
 
 Next up was a session by [Trend Micro](https://www.trendmicro.com/) which talked about security in the context of DevOps. This is more or less my terrain, so I was interested to see what they had to say. It started out alright with a brief introduction to DevOps and where we came from. But then it turned into a mostly marketing talk about their own product. While I appreciate the fact that this was a free conference, so companies have to sell their products at this conference to make it worth their while, I would have rather heard about some of the challenges you can face when trying to integrate security into your DevOps process.
 
-![Security and DevOps - How Have Applications Changed?](/static/img/infosecurity-conference/20181101_111220.jpg)
+![Security and DevOps - How Have Applications Changed?](/img/infosecurity-conference/20181101_111220.jpg)
 
 For my third session I attended a talk by [Dell EMC](https://www.dellemc.com) and [SPIE](https://www.spie-nl.com/) that was about Smart (or Digital) cities. Again, this was not so much about security, but rather an inspirational talk about digital transformation for cities. I quite enjoyed the talk though, since it went through all of the challenges cities face as more and more people are moving into cities and how digital technology can help solve some of these problems and make cities livable and sustainable. They also showed some examples of the things they are doing together in this space, such as project *Trekschuit 2.0*, which is an autonomous boat that will eventually go through the canals in Delft to deliver packages. A very interesting and inspirational story.
 
-![Digital Cities - What is a Digital City](/static/img/infosecurity-conference/20181101_115526.jpg)
-![Digital Cities - Digital City Architectural Blueprint](/static/img/infosecurity-conference/20181101_120008.jpg)
+![Digital Cities - What is a Digital City](/img/infosecurity-conference/20181101_115526.jpg)
+
+![Digital Cities - Digital City Architectural Blueprint](/img/infosecurity-conference/20181101_120008.jpg)
 
 ## Lost jacket
 After the third session I realized that I had left my jacket in the room of the first session, so I had to go back. Thankfully someone from staff had already picked it up and brought it to the lost & found. They even brought it back to me, which was great service, especially for a free conference. We also utilized this time to grab some lunch.
@@ -29,8 +30,9 @@ After the third session I realized that I had left my jacket in the room of the 
 ## More sessions
 For the fourth session I attended a talk by [HPE](https://www.hpe.com) in which they explained how they utilized artificial intelligence in order to improve their support processes. Again, not so much security related, but it was an interesting approach nonetheless. This setup allowed them to fix an issue introduced in a firmware patch for their storage devices that impacted one customer, before they impacted other customers since the AI could predict if that particular issue could also arise there.
 
-![AI for Support - Predictive Analytics](/static/img/infosecurity-conference/20181101_124542.jpg)
-![AI for Support - Architecting the AI Recommendation Engine](/static/img/infosecurity-conference/20181101_124637.jpg)
+![AI for Support - Predictive Analytics](/img/infosecurity-conference/20181101_124542.jpg)
+
+![AI for Support - Architecting the AI Recommendation Engine](/img/infosecurity-conference/20181101_124637.jpg)
 
 The fifth session was about security by design and how security related activities have to shift left as organizations are increasingly adopting DevOps. The speaker talked about a company that previously did releases once a year, but switched to a model where they were shipping every two weeks. However, they didn't include the security aspects into this process since the security officer said he couldn't do everything he had to do within those two weeks. Obviously this means that we have to security related activities more often, but have to make them smaller. He also talked about how security by design also means that you have to think of security from a business perspective and that the user experience is an important piece of that as well.
 
@@ -43,5 +45,5 @@ Overall it was a nice conference and a lot bigger than I expected at first. Give
 
 I ended the conference with a virtual reality flying simulator which was an interesting and exciting experience as well as an exhausting one. It had nothing to do with security of course, but it was fun nonetheless:
 
-![VR Flying Experience](/static/img/infosecurity-conference/vr-flying.jpg)
+![VR Flying Experience](/img/infosecurity-conference/vr-flying.jpg)
 
