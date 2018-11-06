@@ -9,6 +9,7 @@ googleAnalytics = "UA-108599285-1"
 paginate = 10
 footnotereturnlinkcontents = "↩"
 theme = "hugo-icarus-theme"
+enableEmoji = true
 # Comment the themesDir option if you use this theme in production
 #themesDir = "themes"
 
