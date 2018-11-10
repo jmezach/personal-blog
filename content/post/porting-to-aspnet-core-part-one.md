@@ -11,7 +11,7 @@ Last week I took to [Twitter](https://twitter.com/jmezach/status/105735420627173
 So when I recently spent some time porting one of the open source projects I work on from ASP.NET to ASP.NET Core I figured I might as well write a blog post about my experience in doing so. But as I was writing this post I figured it might be a better plan to write a series of posts that are shorted and more focused. So this is the first post in a series of posts in which I'll introduce the app I've ported and some of the reasons behind porting it. Then in the next post I'll talk about how to handle third party dependencies and some of the tools available to help you determine the feasibility of porting. After that I'll go through the actual mechanics of porting and the steps I took. Then finally I'll talk about some of deployment and packaging options that are now available:
 
 - [Part 1: Introduction]({{< relref "porting-to-aspnet-core-part-one" >}})
-- Part 2: Third party dependencies
+- [Part 2: Third party dependencies]({{< relref "porting-to-aspnet-core-part-two" >}})
 - Part 3: Mechanics of porting
 - Part 4: Deployment and packaging options 
 
@@ -29,4 +29,4 @@ Fast forward to today and we're seeing an increasing interest in *Augurk*. Quite
 
 Additionally we recognize that teams that are doing [Specification By Example](https://searchsoftwarequality.techtarget.com/definition/Specification-by-example-SBE) and/or [behavior driven development](https://searchsoftwarequality.techtarget.com/definition/Behavior-driven-development-BDD) aren't limited to using the .NET platform, so it doesn't make much sense to require them to setup Windows infrastructure just to run *Augurk*. 
 
-So in order to increase the target audience of *Augurk* it makes sense to investigate a port of *Augurk* from ASP.NET on .NET Framework to ASP.NET Core so that we can run cross-platform. In fact, we've been thinking about porting it to .NET Core for quite a while now. Unfortunately we had to play the waiting game for some of our third-party dependencies which I'll talk about more in the next post.
+So in order to increase the target audience of *Augurk* it makes sense to investigate a port of *Augurk* from ASP.NET on .NET Framework to ASP.NET Core so that we can run cross-platform. In fact, we've been thinking about porting it to .NET Core for quite a while now. Unfortunately we had to play the waiting game for some of our third-party dependencies which I'll talk about more in the [next post]({{< relref "porting-to-aspnet-core-part-two" >}}).
