@@ -37,5 +37,28 @@ But if there is no alternative available then I suggest checking if the package 
 
 And if you want to take things a step further you can also try to help out the owners of the library to port it to .NET Core. I'm sure that a pull request would be much appreciated (although you should discuss it in an issue first). If you are using it there are probably others who could benefit from a port as well.
 
+## The elephant in the room
+By now you might be wondering: isn't .NET itself a dependency as well? And you're absolutely right. While most of the API's that you're familiar with in .NET are also available on .NET Core there are a few that aren't. So how do we find out about these? Luckily there's another tool to help us out here, the [.NET Portability Analyzer](https://docs.microsoft.com/en-us/dotnet/standard/analyzers/portability-analyzer). This tool can be installed as a Visual Studio extension, or can be run from the commandline. Let's try the Visual Studio extension, which can be downloaded from the [Marketplace](https://marketplace.visualstudio.com/items?itemName=ConnieYau.NETPortabilityAnalyzer), on *Augurk*.
+
+After installing the extension, the first thing you'll want to do is open up the **Options** page to configure it. You can reach these options by going to **Tools -> Options** and searching for Portability. Since the tool isn't constrained to just .NET Core, you can actually check if your code can be ported to a wide variety of .NET platforms:
+
+![Portability Analyzer Options](/img/porting-to-aspnet-core/portability-analyzer-options.png)
+
+There are a lot of options to choose here. Depending on your needs you can add or remove platforms that will be evaluated. Obviously for this porting effort I'm mostly interested in the portability to .NET Core 2.1 and ASP.NET Core, so I chose those two options. I then ran the portability analysis by right clicking on the solution and choosing the **Analyse Assembly Portability**. You can choose different output formaats, but in my case I used the default Excel output. Here's a screenshot of the results:
+
+![Portability Analyzer Results](/img/porting-to-aspnet-core/portability-analyzer-results.png)
+
+This table gives a quick overview of how many API calls are being made from your code that aren't available on the target platform. It's presented in percentages, meaning that if it's 100% all API's are available. Anything lower means that there are API's being called that are not present on that target platform. Note that the tool doesn't care if that API is called once or 20 times in your code.
+
+Of course if something is less than 100%, you'll want to know what API's we're talking about. So we can switch to the Details tab to get an overview of all the API's we are currently using:
+
+![Portability Analyzer Details](/img/porting-to-aspnet-core/portability-analyzer-details.png)
+
+For some usages of API's there even a recommendation as to how you should handle those. For others you'll have to find a solution yourself. In this case we're seeing a few usages of **System.Configuration.ConfigurationManager**. This API is no longer available since the configuration subsystem has been completely revamped and is now based on JSON files, rather than XML files. Most of the usages for *Augurk* though seem to focus around the usage of the old MSTest V1 test framework, for which a replacement is available in MSTest V2.
+
 ## Conclusion
 For any port to .NET Core is important to have your dependencies available there as well. Luckily for us this is the case with *Augurk*, although it took some time before *RavenDB* was ready to work on .NET Core. Your mileage may vary, but it might be a good idea to get start with a dependency scan as I've shown here to get an idea of what and what isn't available on .NET Core.
+
+If it's looking like most of your dependencies are available, the next step is to see how your own code will translate to .NET Core by using the Portability Analyzer. Again, if you get very low percentages here you're going to have a hard time porting, but in my experience you'll usually easily get 90% or higher. And of course you'll have to measure something to know what you need to do, and this is a great way to do just that.
+
+In my next post I'll go over the steps to do the actual porting.
