@@ -12,7 +12,7 @@ So when I recently spent some time porting one of the open source projects I wor
 
 - [Part 1: Introduction]({{< relref "porting-to-aspnet-core-part-one" >}})
 - [Part 2: Third party dependencies]({{< relref "porting-to-aspnet-core-part-two" >}})
-- Part 3: Mechanics of porting
+- [Part 3: Mechanics of porting]({{< relref "porting-to-aspnet-core-part-three" >}})
 - Part 4: Deployment and packaging options 
 
 Oh, and before you ask, yes I did submit a couple of proposals to [NDC Porto](https://ndcporto.com/) as well as a local event [dotNedSaturday](https://dotnedsaturday.nl/) on this very subject. Now I can only hope they will be selected.

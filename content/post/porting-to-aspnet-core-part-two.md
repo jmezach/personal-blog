@@ -10,7 +10,7 @@ This post is part of a series:
 
 - [Part 1: Introduction]({{< relref "porting-to-aspnet-core-part-one" >}})
 - [Part 2: Third party dependencies]({{< relref "porting-to-aspnet-core-part-two" >}})
-- Part 3: Mechanics of porting
+- [Part 3: Mechanics of porting]({{< relref "porting-to-aspnet-core-part-three" >}})
 - Part 4: Deployment and packaging options 
 
 If you haven't read the [first post]({{< relref "porting-to-aspnet-core-part-one" >}}) yet I suggest reading that first since it introduces the app that I'm porting and some of the reasons behind it.
@@ -61,4 +61,4 @@ For any port to .NET Core is important to have your dependencies available there
 
 If it's looking like most of your dependencies are available, the next step is to see how your own code will translate to .NET Core by using the Portability Analyzer. Again, if you get very low percentages here you're going to have a hard time porting, but in my experience you'll usually easily get 90% or higher. And of course you'll have to measure something to know what you need to do, and this is a great way to do just that.
 
-In my next post I'll go over the steps to do the actual porting.
+In my [next post]({{< relref "porting-to-aspnet-core-part-three" >}}) I'll go over the steps to do the actual porting.
