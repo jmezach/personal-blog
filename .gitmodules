@@ -2,3 +2,6 @@
 	path = public
 	url = https://github.com/jmezach/jmezach.github.io.git
 	branch = master
+[submodule "themes/hugo-icarus-theme"]
+	path = themes/hugo-icarus-theme
+	url = https://github.com/digitalcraftsman/hugo-icarus-theme
