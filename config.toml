@@ -19,7 +19,7 @@ enableRobotsTXT = true
 [params]
   favicon = ""
   description = "Hello World"
-  facebook = "https://www.facebook.com/jmezach"
+  facebook = ""
   twitter = "https://twitter.com/jmezach"
   instagram = "https://www.instagram.com/jonathanmezach/"
   youtube = "https://www.youtube.com/channel/UCA4OPwB_HlIhSW6EaXOGcJQ"
