@@ -3,12 +3,13 @@ baseURL = "https://jmezach.github.io"
 languageCode = "en-us"
 theme = "ananke"
 disqusShortname = "jmezach"
+enableEmoji = true
 
 MetaDataFormat = "yaml"
 DefaultContentLanguage = "en"
 SectionPagesMenu = "main"
 Paginate = 12 # this is set low for demonstrating with dummy content. Set to a higher number
-googleAnalytics = ""
+googleAnalytics = "UA-108599285-1"
 enableRobotsTXT = true
 
 [sitemap]
@@ -33,3 +34,20 @@ enableRobotsTXT = true
   featured_image = "/img/hero-image.jpg"
   recent_posts_number = 6
   show_reading_time = true
+
+[privacy]	
+  [privacy.disqus]	
+    disable = false	
+  [privacy.googleAnalytics]	
+    anonymizeIP = true	
+    disable = false	
+    respectDoNotTrack = true	
+    useSessionStorage = true	
+  [privacy.instagram]	
+    disable = true	
+  [privacy.twitter]	
+    disable = true	
+  [privacy.vimeo]	
+    disable = true	
+  [privacy.youtube]	
+    disable = true 
