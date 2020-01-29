@@ -1,126 +1,53 @@
-baseurl = "https://jmezach.github.io/"
-languageCode = "en-us"
 title = "Jonathan's Blog"
-# Enable comments by entering your Disqus shortname
+baseURL = "https://jmezach.github.io"
+languageCode = "en-us"
+theme = "ananke"
 disqusShortname = "jmezach"
-# Enable Google Analytics by entering your tracking code
-googleAnalytics = "UA-108599285-1"
-# Define the number of posts per page
-paginate = 10
-footnotereturnlinkcontents = "↩"
-theme = "hugo-icarus-theme"
 enableEmoji = true
-# Comment the themesDir option if you use this theme in production
-#themesDir = "themes"
 
+MetaDataFormat = "yaml"
+DefaultContentLanguage = "en"
+SectionPagesMenu = "main"
+Paginate = 12 # this is set low for demonstrating with dummy content. Set to a higher number
+googleAnalytics = "UA-108599285-1"
+enableRobotsTXT = true
 
-[permalinks]
-    post = "/:year/:month/:day/:slug"
-
+[sitemap]
+  changefreq = "monthly"
+  priority = 0.5
+  filename = "sitemap.xml"
 
 [params]
-    # Tell me who you are
-    author = "Jonathan Mezach"
-    bio = "Architect - Programmer - Speaker"
-    location = "Deventer, The Netherlands"
-    site_description = ""
-    copyright  = "Powered by [Hugo](//gohugo.io). Theme by [PPOffice](http://github.com/ppoffice)."
-    avatar = "css/images/avatar.png"
-    # Enter your email address to display your Gravatar icon in the profile. If not set the theme
-    # will fallback to the avatar.
-    # gravatar = "jonathanm@infosupport.com"
-    logo = "css/images/logo.png"
-    disable_mathjax = false # set to true to disable MathJax
+  body_classes = "helvetica bg-light-gray"
+  favicon = ""
+  description = "Hello World"
+  facebook = ""
+  twitter = "https://twitter.com/jmezach"
+  instagram = "https://www.instagram.com/jonathanmezach/"
+  youtube = "https://www.youtube.com/channel/UCA4OPwB_HlIhSW6EaXOGcJQ"
+  github = "https://github.com/jmezach"
+  gitlab = ""
+  linkedin = "https://www.linkedin.com/in/jmezach/"
+  mastodon = ""
+  # choose a background color from any on this page: http://tachyons.io/docs/themes/skins/ and preface it with "bg-"
+  background_color_class = "bg-mid-gray"
+  featured_image = "/img/hero-image.jpg"
+  recent_posts_number = 6
+  show_reading_time = true
 
-    # define which types of pages should be shown. By default the type with the most regular pages
-    mainSections = ["post"]
-
-    # Format dates with Go's time formatting
-    date_format = "2006-01-02"
-
-    # Add custom assets with their paths relative to the static folder
-	custom_css = []
-	custom_js  = []
-
-# Create custom menu entries by defining a label and a link for
-# them. Since you can also link posts, you've the option the
-# place the links before or after them.
-#
-# E.g.: "Home" appears before all linked posts in the menu
-# and "Tags" / "Categories" after them.
-[[params.menu]]
-    before = true
-    label  = "Home"
-    link   = "/"
-
-[[params.menu]]
-    before = false
-    label  = "Tags"
-    link   = "tags/"
-
-[[params.menu]]
-    before = false
-    label  = "Categories"
-    link   = "categories/"
-
-# Enter a link for the follow button on the left
-[params.profile]
-    follow_button = "https://github.com/jmezach"
-
-
-[social]
-# Add your social network accounts to the profile section on the left
-# by entering your username. The links to your account will be
-# created automatically.
-    github          = "jmezach"
-    gitlab          = ""
-    bitbucket       = ""
-    jsfiddle        = ""
-    codepen         = ""
-    foursquare      = ""
-    dribbble        = ""
-    deviantart      = ""
-    behance         = ""
-    flickr          = ""
-    instagram       = ""
-    youtube         = ""
-    vimeo           = ""
-    vine            = ""
-    medium          = ""
-    wordpress       = ""
-    tumblr          = ""
-    xing            = ""
-    linkedin        = "jmezach"
-    slideshare      = ""
-    stackoverflow   = ""
-    reddit          = ""
-    pinterest       = ""
-    googleplus      = ""
-    facebook        = "jmezach"
-    facebook_admin  = ""
-    twitter_domain  = ""
-    twitter         = "jmezach"
-
-# Enable and disable widgets for the right sidebar
-[params.widgets]
-    recent_articles = true
-    categories = true
-    tags = true
-    tag_cloud = true
-
-[privacy]
-  [privacy.disqus]
-    disable = false
-  [privacy.googleAnalytics]
-    anonymizeIP = true
-    disable = false
-    respectDoNotTrack = true
-    useSessionStorage = true
-  [privacy.instagram]
-    disable = true
-  [privacy.twitter]
-    disable = true
-  [privacy.vimeo]
-    disable = true
-  [privacy.youtube]
-    disable = true
+[privacy]	
+  [privacy.disqus]	
+    disable = false	
+  [privacy.googleAnalytics]	
+    anonymizeIP = true	
+    disable = false	
+    respectDoNotTrack = true	
+    useSessionStorage = true	
+  [privacy.instagram]	
+    disable = true	
+  [privacy.twitter]	
+    disable = true	
+  [privacy.vimeo]	
+    disable = true	
+  [privacy.youtube]	
+    disable = true 
