@@ -1,3 +1,11 @@
 {
-     "insertDateString.format": "YYYY-MM-DDThh:mm:ssZZZ"
+     "insertDateString.format": "YYYY-MM-DDThh:mm:ssZZZ",
+     "spellright.language": [
+          "en"
+     ],
+     "spellright.documentTypes": [
+          "markdown",
+          "latex",
+          "plaintext"
+     ]
 }
