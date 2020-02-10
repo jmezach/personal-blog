@@ -13,7 +13,7 @@ So I suggested to do some automation around these things, since they were labori
 This is the first post in a series:
 
 - [Part 1: Introduction]({{< relref "building-a-pull-request-bot-part1" >}})
-- Part 2: How it works 
+- [Part 2: How it works]({{< relref "building-a-pull-request-bot-part2" >}})
 
 ## A first try
 For my first try I had a couple of constraints and challenges that I needed to tackle:
@@ -48,4 +48,4 @@ Honestly I was quite surprised how easy it was to move my existing code into Azu
 
 {{< figure src="/img/building-a-pullrequest-bot/new-architecture.png" alt="Azure Functions Architecture" >}}
 
-In my next post I will dive into the inner workings of the bot to explain in detail how it works.
+In my [next post]({{< relref "building-a-pull-request-bot-part2" >}}) I will dive into the inner workings of the bot to explain in detail how it works.
