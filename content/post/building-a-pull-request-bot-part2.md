@@ -83,6 +83,41 @@ var context = new AnalysisContext(pullRequest);
 await orchestrator.StartNewAsync(nameof(PullRequestFlow), instanceId, context);
 ```
 
-As you can see in the code sample above we first create an object to represent the pull request, with some basic information that we get from the payload such as its state, the repository it has been created in, the source and target branches, etc. We then wrap that into an `AnalysisContext` (more on that later) and start a new instance of the `PullRequestFlow` orchestration with the context and give it an identifier that matches the identifier of the pull request.
+As you can see in the code sample above we first create an object to represent the pull request, with some basic information that we get from the payload such as its state, the repository it has been created in, the source and target branches, etc. We then wrap that into an `AnalysisContext` (more on that later) and start a new instance of the `PullRequestFlow` orchestration with the context and give it an identifier that matches the identifier of the pull request. This is what the durable orchestration function definition looks like:
 
-The pull request flow is a durable orchestration that will keep running until the associated pull request is completed. It doesn't do much in and of itself, but delegates actual work to other functions and coordinates those. 
+```csharp
+[FunctionName(nameof(PullRequestFlow))]
+public async Task Run([OrchestrationTrigger] DurableOrchestrationContextBase context, ILogger logger)
+{
+    // Get the AnalysisContext that is passed as input to this function
+    AnalysisContext analysisContext = context.GetInput<AnalysisContext>();
+}
+```
+
+The pull request flow is a durable orchestration that will keep running until the associated pull request is completed. It doesn't do much in and of itself, but delegates actual work to other functions and coordinates those. To give an overview of how this flow works we've drawn a diagram that shows each of the steps in the process:
+
+{{< figure src="/img/building-a-pullrequest-bot/pull-request-flow.png" alt="Pull Request Flow" >}}
+
+Since most of the validations that we imagined early on that we wanted to do would revolve around the files changed in the pull request, we'll first need to compile that list. To do that though, we need to ensure that the pull request is currently in a mergeable state. We'll do this by calling out into an activity function (an Azure Function that does the actual work) like this:
+
+```csharp
+var mergable = await context.CallActivityWithRetryAsync<bool>(nameof(EnsurePullRequestIsMergeable), _retryOptions, analysisContext);
+```
+
+We're passing along the `AnalysisContext` to this function which includes the details of the pull request so we can use that to do a call into Azure DevOps to determine if the pull request is mergeable:
+
+```csharp
+[FunctionName(nameof(EnsurePullRequestIsMergeable))]
+public async Task<bool> EnsurePullRequestIsMergeable([ActivityTrigger] DurableActivityContextBase context)
+{
+    // Get the pull request in question
+    var analysisContext = context.GetInput<AnalysisContext>();
+    var pullRequest = analysisContext.PullRequest;
+
+    // Check if the pull request is mergable
+    var result = await _gitClientService.IsPullRequestMergable(pullRequest.ProjectId, pullRequest.RepositoryId, pullRequest.PullRequestId);
+    return result.GetValueOrDefault();
+}
+```
+
+Note that the call to the Azure DevOps API has been put behind an interface so that we could potentially swap that out for a different implementation that targets a different source control platform.
