@@ -14,6 +14,7 @@ This is the first post in a series:
 
 - [Part 1: Introduction]({{< relref "building-a-pull-request-bot-part1" >}})
 - [Part 2: How it works]({{< relref "building-a-pull-request-bot-part2" >}})
+- Part 3: Operating it
 
 ## A first try
 For my first try I had a couple of constraints and challenges that I needed to tackle:
