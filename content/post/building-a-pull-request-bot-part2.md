@@ -6,7 +6,7 @@ tags: [ ".NET", "Azure Functions", "DevOps" ]
 categories: [ "Azure" ]
 ---
 
-This is the second post in my series on building a pull request bot using Azure Functions. If you haven't read my [first post]({{< relref "building-a-pull-request-bot-part1" >}}) I strongly recommend doing so before diving into this post.
+This is the second post in my series on building a pull request bot using Azure Functions. If you haven't read my [first post]({{< relref "building-a-pull-request-bot-part1" >}}) I strongly recommend doing so before diving into this post. Remember that this series is a part of the [Applied Cloud Stories](http://aka.ms/applied-cloud-stories) initiative.
 
 - [Part 1: Introduction]({{< relref "building-a-pull-request-bot-part1" >}})
 - [Part 2: How it works]({{< relref "building-a-pull-request-bot-part2" >}})

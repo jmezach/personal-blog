@@ -10,7 +10,7 @@ About 2,5 years ago I was talking to my fellow team members about some of their 
 
 So I suggested to do some automation around these things, since they were laborious and dull which made them an ideal candidate for automation. And there the idea of a pull request bot was born. I wanted to develop something that could be easily extended to perform whatever automated checks we could think of and then post comments in the pull request to trigger developers. So I set out to build just that.
 
-This is the first post in a series:
+This is the first post in a series and I figured it would be a great story to tell as part of the [Applied Cloud Stories](http://aka.ms/applied-cloud-stories) initiative.
 
 - [Part 1: Introduction]({{< relref "building-a-pull-request-bot-part1" >}})
 - [Part 2: How it works]({{< relref "building-a-pull-request-bot-part2" >}})
