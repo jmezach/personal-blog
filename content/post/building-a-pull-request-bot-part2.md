@@ -10,7 +10,7 @@ This is the second post in my series on building a pull request bot using Azure 
 
 - [Part 1: Introduction]({{< relref "building-a-pull-request-bot-part1" >}})
 - [Part 2: How it works]({{< relref "building-a-pull-request-bot-part2" >}})
-- Part 3: Operating it
+- [Part 3: Operating it]({{< relref "building-a-pull-request-bot-part3" >}})
 
 In this post I'll dive into the details of how the bot actually works, from receiving notifications from Azure DevOps to managing state and posting comments back to the pull request.
 
@@ -280,4 +280,4 @@ As for the build completed event, we mostly do the same thing. We receive the id
 ## Conclusion
 Wow, that was a lot. Yet, I still think this is a much simpler solution than what we had initially that I alluded to in my [previous post]({{< relref "building-a-pull-request-bot-part1" >}}). We just keep running the same loop over and over until the pull request is completed. By running each analyzer in its own activity function we also don't have to worry about one of them blocking the others.
 
-Of course this setup isn't without its caveats either and we did run into a couple of things when we put this into production, but let's talk about that in more detail in my next post.
+Of course this setup isn't without its caveats either and we did run into a couple of things when we put this into production, but let's talk about that in more detail in my [next post]({{< relref "building-a-pull-request-bot-part3" >}}).
