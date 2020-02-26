@@ -34,3 +34,123 @@ After we've deployed our infrastructure we can deploy the application itself. Th
 To make sure that we leave the bot in a working state after deployment we've also added a [deployment gate](https://docs.microsoft.com/en-us/azure/devops/pipelines/release/approvals/gates?view=azure-devops) on the last stage of the pipeline. This calls into a Health Check API we've implemented in the bot itself, which is just an HTTP triggered function that uses ASP.NET Core's [Health Checking](https://docs.microsoft.com/en-us/aspnet/core/host-and-deploy/health-checks?view=aspnetcore-3.1) capabilities. In this health check we're checking to make sure we can access the storage account and that the subscription identifiers that have been configured are valid and are enabled by calling into Azure DevOps. So far we haven't set up an automatic periodic check of the health, but at least we know that after a deployment things are still working.
 
 ## Monitoring
+As always just building something and putting it into production isn't enough. You'll need to monitor it to make sure things are working correctly, even if it's just a relatively simple application. Since Azure Functions integrates nicely with [Application Insights](https://docs.microsoft.com/en-us/azure/azure-monitor/app/app-insights-overview) it made sense to use that. It comes with a whole lot of functionality right out of the box, without having to write any code. For example, we can have a look at how our bot interacts with other services quickly through the Application Map:
+
+{{< figure src="/img/building-a-pullrequest-bot/app-insights-appmap.png" title="AppInsights Application Map" >}}
+
+From this we can immediately see how many calls we are making to each service, for example Azure DevOps, as well as the average response time. If calls to those services are failing they will show up in red as well. This can be useful to look at when the bot isn't working as expected to quickly see where things are going wrong.
+
+In addition to that, due to the integration with Azure Functions, we also get some functions related metrics into our application insights resource. Remember that I mentioned in my previous post that we've made each analyzer its own activity function. This means that we can see each individual invocation of that analyzer and see if it is working or failing right from the Azure Function App. For example in the screenshot below we can see that this particular analyzer has been run successfully *1768* times in the past 30 days, but failed *10* times:
+
+{{< figure src="/img/building-a-pullrequest-bot/app-insights-function-monitor.png" title="AppInsights Function Monitoring" >}}
+
+This gives us some really nice insights into how each individual analyzer is performing. And to make it even more useful we've included some custom metrics into the bot itself as well. I mentioned in a previous post that we are authorizing request to the bot using the subscription identifiers from the service hook created in Azure DevOps. If that authorization fails that's an important event, because that could mean that someone is trying to abuse our bot. So we added a little bit of code to the bot to track that as a metric. We've defined the metrics we want to track in a `CustomEvents` class, along with a factory method to create a `EventTelemtry` instance:
+
+```csharp
+internal static class CustomEvents
+{
+    internal static class InvalidSubscriptionId
+    {
+        private const string Name = "PRBot.InvalidSubscriptionId";
+        private const string Scope = "Scope";
+        private const string SubscriptionId = "SubscriptionId";
+
+        public static EventTelemetry Create(string scope, string subscriptionId)
+        {
+            var evt = new EventTelemetry(Name);
+            evt.Properties.Add(Scope, scope);
+            evt.Properties.Add(SubscriptionId, subscriptionId);
+            return evt;
+        }
+    }
+}
+```
+
+We then use that factory method in one of the HTTP triggered functions like this:
+
+```csharp
+_telemetryClient.TrackEvent(CustomEvents.InvalidSubscriptionId.Create(nameof(BuildCompleted), payload.SubscriptionId));
+```
+
+The `TelemetryClient` instance that we need to track this event is injected through Azure Function's dependency injection mechanism, which is already hooked up the application insights resource that's associated with the Function App. With this in place we were able to build a dashboard in the Azure portal that uses this metric as well as various other metrics to give an overview of the overall health of the bot. Pretty neat!
+
+## Managing the state
+There's one more thing we need to worry about in terms of operations which is cleaning up after ourselves. For each pull request that gets created in Azure DevOps an instance of the durable orchestration is created that captures the state of each analyzer. Once a pull request is completed that state is no longer relevant and can be deleted. Rather than having to do this manually, we've automated this bit as well by using a Timer triggered function. This function runs once a day and does pretty much this:
+
+```csharp
+public async Task DailyCleanup([TimerTrigger(SCHEDULE)]TimerInfo timer,
+                                [OrchestrationClient] DurableOrchestrationClientBase client,
+                                ILogger logger)
+{
+    var instances = await client.GetStatusAsync();
+    foreach (var instance in instances)
+    {
+        // If the instance has completed, let's remove it
+        if (instance.RuntimeStatus == OrchestrationRuntimeStatus.Completed)
+        {
+            await client.PurgeInstanceHistoryAsync(instance.InstanceId);
+        }
+    }
+}
+```
+
+> Note that SCHEDULE is a constant that uses Cron syntax to define how often it runs. For our release builds we put in `0 0 0 * * *` which means run this once a day. To help with debugging we've used an #if and put in `0 */1 * * * *` which means run this every minute.
+
+One problem we faced was how we would deal with abandoned pull requests because they could be reactivated at any time in the future. But if they would never be reactivated we would keep state around for no reason. Since there's a small cost involved, we needed some way to determine if it was still useful to keep that state around. To deal with this, we used a feature of Durable Functions called custom status. What that means is that we write a custom status object from within the durable orchestration at the start of it:
+
+```csharp
+AnalysisContext analysisContext = context.GetInput<AnalysisContext>();
+context.SetCustomStatus(analysisContext.PullRequest);
+```
+
+This allows us to read some details about the pull request from our cleanup function to do some additional checks:
+
+```csharp
+else
+{
+    var customStatus = instance.CustomStatus;
+    if (customStatus == null || customStatus.Type == JTokenType.Null)
+    {
+        await client.PurgeInstanceHistoryAsync(instance.InstanceId);
+    }
+    else
+    {
+        var pullRequest = customStatus.ToObject<PullRequest>();
+        if (pullRequest.CurrentState == "abandoned")
+        {
+            bool result = await _gitClientService.DoesBranchExist(pullRequest.ProjectId, pullRequest.RepositoryId, pullRequest.SourceRefName);
+            if (!result)
+            {
+                await client.PurgeInstanceHistoryAsync(instance.InstanceId);
+            }
+            else
+            {
+                // Log something
+            }
+        }
+        else
+        {
+            bool? result = await _gitClientService.IsPullRequestCompleted(pullRequest.ProjectId, pullRequest.RepositoryId, instance.InstanceId);
+            if (!result.HasValue || result.Value)
+            {
+                await client.PurgeInstanceHistoryAsync(instance.InstanceId);
+            }
+            else
+            {
+                // Log something
+            }
+        }
+    }
+}
+```
+
+Wow, that was a lot, so let me explain what's happening here. If the orchestration hasn't completed yet and we know that the pull request is in abandoned state we check if the associated source branch still exists. If it doesn't, we assume that the pull request isn't relevant anymore so we go ahead and delete the orchestration. Otherwise we will keep the state around since the pull request could still be reactivated.
+
+One other case we found is that things are going very fast and the pull request has already been completed while the bot was still running. To handle that scenario we also check if the pull request hasn't been completed in the mean time and clean up the state in that scenario as well. All this ensures that we don't keep state around that we don't need anymore.
+
+## Conclusion
+As you've seen we've put quite a few things in place to make sure that the bot is running smoothly and can be easily updated and expanded as we move along. Of course there's always more you can do, but I'm quite happy with how its running now. A couple of my co-workers have already made some pull requests to include additional functionality as we needed it which is nice to see.
+
+One thing I've been looking into is to see if it is worthwhile to make use of Durable Entities, which is a new concept in Azure Durable Functions. I think it could make some things a little bit cleaner and easier to maintain, but I haven't looked at it enough yet to make that choice. Maybe one day.
+
+And with that I've come to the end of this series on building a pull request bot using Azure (Durable) Functions. I hope you've enjoyed reading this. If you have any questions, do not hesitate to leave a comment here or tweet me on [Twitter](https://twitter.com/jmezach).
