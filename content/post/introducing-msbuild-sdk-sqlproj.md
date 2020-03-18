@@ -175,3 +175,80 @@ public static void AddReference(this TSqlModel model, string referencePath)
 > Yes, that's not very pretty and nothing I generally recommend doing. But in this case I figured that if I could limit it to this single extension method I could probably live with it, given the potential benefits.
 
 Now all I needed to do is wire up the arguments to this extension method. Order is important though, so I made sure that we add the references first before we try to add any of the objects from the input files. Otherwise you'll get validation errors when the package is being saved.
+
+## Model properties
+With the existing SSDT projects there are quite a few properties you can set on the model. Things like the recovery mode of the resulting database, or the collation of the database, etc. Now that we have a `.csproj` instead of a `.sqlproj` we no longer have the UI to edit these in Visual Studio, but we can still set those properties in the project file:
+
+```xml
+<Project Sdk="MSBuild.Sdk.SqlProj/1.0.0">
+    <PropertyGroup>
+        <TargetFramework>netstandard2.0</TargetFramework>
+        <RecoveryMode>Simple</RecoveryMode>
+        <AnsiNullsOn>True</AnsiNullsOn>
+    </PropertyGroup>
+</Project>
+```
+
+Of course the challenge was getting these properties down to the command line tool and then onto the `TSqlModelOptions` so that they end up in the `.dacpac`. To fix this I first added a comma separated list of known properties to the `Sdk.props` file:
+
+```xml
+<PropertyGroup>
+    <KnownModelProperties>
+        AnsiNullsOn;
+        ...
+        RecoveryMode;
+        ...
+    </KnownModelProperties>
+</PropertyGroup>
+```
+
+I used the [API docs](https://docs.microsoft.com/en-us/dotnet/api/microsoft.sqlserver.dac.model.tsqlmodeloptions?view=sql-dacfx-140.3881.1) for the `TSqlModelOptions` class to create this list. Then I modified the `CoreCompile` target a little bit again to pass these properties into the command line tool:
+
+```xml
+<Target Name="CoreCompile" DependsOnTargets="ResolveDatabasePackageReferences">
+    <ItemGroup>
+      <_PropertyNames Include="$(KnownModelProperties)" />
+      <PropertyNames Include="@(_PropertyNames)" Condition=" '$(%(Identity))' != '' ">
+        <PropertyValue>$(%(_PropertyNames.Identity))</PropertyValue>
+      </PropertyNames>
+    </ItemGroup>
+    <PropertyGroup>
+      <InputFileArguments>@(Content->'&quot;%(FullPath)&quot;', ' ')</InputFileArguments>
+      <ReferenceArguments>@(DacpacReference->'-r &quot;%(PhysicalLocation)\tools\%(Identity).dacpac&quot;', ' ')
+      <PropertyArguments>@(PropertyNames->'-p %(Identity)=%(PropertyValue)', ' ')</PropertyArguments>
+    </PropertyGroup>
+    <Exec Command="dotnet $(MSBuildThisFileDirectory)../tools/BuildDacpac.dll $(ReferenceArguments) $(InputFileArguments) $(PropertyArguments)" />
+</Target>
+```
+
+This is a little complicated, so let me explain. First I turn the `KnownModelProperties` property (yep, that's confusing) into an item so that I get a list of each property calling it `_PropertyNames`. Next I use that list to figure out if any of those properties is set for the current project (that's what the condition on `PropertyNames` is for) and simultaneously resolve its value. Finally we pass that to the command line tool in the format `-p <PropertyName>=<PropertyValue>`.
+
+Of course we still need to parse those arguments in the command line tool. Since this was becoming increasingly complicated I figured it was time to use a library for that: [System.CommandLine](https://www.nuget.org/packages/System.CommandLine/2.0.0-beta1.20158.1). This is a new API from the .NET team for building command line parsers. So I used that to parse the arguments in my `Program` class:
+
+```csharp
+var rootCommand = new RootCommand
+{
+    new Option<string>(new string[] { "--name", "-n" }, "Name of the package"),
+    new Option<string>(new string[] { "--version", "-v" }, "Version of the package"),
+    new Option<FileInfo>(new string[] { "--output", "-o" }, "Filename of the output package"),
+    new Option<SqlServerVersion>(new string[] { "--sqlServerVersion", "-sv" }, () => SqlServerVersion.Sql150, description: "Target version of the model"), 
+    new Option<FileInfo[]>(new string[] { "--input", "-i" }, "Input file name(s)"),
+    new Option<FileInfo[]>(new string[] { "--reference", "-r" }, "Reference(s) to include"),
+    new Option<string[]>(new string[] { "--property", "-p" }, "Properties to be set on the model"),
+};
+
+rootCommand.Description = "Command line tool for generating a SQL Server Data-Tier Application Framework package (dacpac)";
+rootCommand.Handler = CommandHandler.Create<string, string, FileInfo, SqlServerVersion, FileInfo[], FileInfo[], string[]>(BuildDacpac);
+
+return await rootCommand.InvokeAsync(args);
+```
+
+Out of the box this API supports conversions from strings to enum types as well as FileInfo objects for paths. It also supports multiple instances of the same argument which get parsed as an array. It doesn't support the `-p <key>=<value>` format however, so I needed to split those into the key value pairs myself. You can do additional things like printing out help text and validating arguments, but since this tool is meant to be called from MSBuild I figured I wasn't going to spent much time on that for now.
+
+## Testing
+With all of that I was able to replace an existing `.sqlproj` with a new `.csproj` using this SDK package and built a valid `.dacpac` from that. I also compared the resulting packages of both project types with each other and I was happy to see that the output was almost identical. There was one thing missing though. With the old `.sqlproj` a .NET assembly is compiled together with the `.dacpac` which includes a reference to that assembly. This is so you can built [SQLCLR](https://docs.microsoft.com/en-us/dotnet/framework/data/adonet/sql/introduction-to-sql-server-clr-integration) assemblies that get deployed to the database. We aren't currently using this and I hope nobody else does anymore either so I deemed this acceptable.
+
+I still needed to test this though and preferably in an automated fashion. Since I wanted this to be an open-source project I figured it was a good time to give [GitHub Actions](https://github.com/features/actions) a try. I can probably write an entire post on this subject alone, but suffice to say that I managed to built a [pipeline](https://github.com/jmezach/MSBuild.Sdk.SqlProj/blob/master/.github/workflows/main.yml) that builds the SDK package, builds a project using it (across different operating systems and .NET Core SDK versions) and deploys the resulting `.dacpac` to a containerized SQL Server instance. Sweet!
+
+## Conclusion
+An initial 1.0.0 release of `MSBuild.Sdk.SqlProj` is now available up on [NuGet](https://www.nuget.org/packages/MSBuild.Sdk.SqlProj/1.0.0) for anyone to try out. It's been fairly tested with our scenario's, but I'm sure there are scenario's out there that aren't covered (yet) so I'm looking for feedback. Please give it a go and file [issues](https://github.com/jmezach/MSBuild.Sdk.SqlProj/issues) and/or send [pull requests](https://github.com/jmezach/MSBuild.Sdk.SqlProj/pulls). Or reply in the comments section below.
